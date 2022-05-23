@@ -9,6 +9,7 @@
 
 FileTree createFileTree(char* rootFolderName) {
     // TODO
+    // comentariu
 }
 
 void freeTree(FileTree fileTree) {
