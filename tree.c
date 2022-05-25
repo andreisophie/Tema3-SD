@@ -236,16 +236,71 @@ void mkdir(TreeNode* currentNode, char* folderName)
 
 void rmrec(TreeNode* currentNode, char* resourceName)
 {
+    
 }
 
 
 void rm(TreeNode* currentNode, char* fileName)
 {
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    ListNode *prev;
+    while (node) {
+        if (strcmp(node->info->name, fileName) == 0) {
+            if (node->info->type == FOLDER_NODE) {
+                printf("rm: cannot remove '%s': Is a directory", fileName);
+                return;
+            }
+            if (node == list->head) {
+                list->head = node->next;
+                break;
+            }
+            prev->next = node->next;
+            break;
+        }
+        prev = node;
+        node = node->next;
+    }
+    if (node == NULL) {
+        printf("rm: failed to remove '%s': No such file or directory", fileName);
+        return;
+    }
+    freeNode(node->info);
+    free(node);
 }
 
 
 void rmdir(TreeNode* currentNode, char* folderName)
 {
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    ListNode *prev;
+    while (node) {
+        if (strcmp(node->info->name, folderName) == 0) {
+            if (node->info->type == FILE_NODE) {
+                printf("rmdir: failed to remove '%s': Not a directory", folderName);
+                return;
+            }
+            if (((FolderContent *)node->info->content)->children->head != NULL) {
+                printf("rmdir: failed to remove '%s': Directory not empty", folderName);
+                return;
+            }
+            if (node == list->head) {
+                list->head = node->next;
+                break;
+            }
+            prev->next = node->next;
+            break;
+        }
+        prev = node;
+        node = node->next;
+    }
+    if (node == NULL) {
+        printf("rmdir: failed to remove '%s': No such file or directory", folderName);
+        return;
+    }
+    freeNode(node->info);
+    free(node);
 }
 
 void addChild(TreeNode* folder, TreeNode *treeNode)
