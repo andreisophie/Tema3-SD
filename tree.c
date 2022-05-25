@@ -130,7 +130,7 @@ TreeNode* cd(TreeNode* currentNode, char* path)
     char *token = strtok(path, "/\0");
     while (token) {
         if (strcmp(token, "..") == 0) {
-            currentNode = currentNode->parent;
+            node = node->parent;
         } else {
             node = search_node(node, token);
             if (!node || node->type == FILE_NODE) {
