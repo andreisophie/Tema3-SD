@@ -79,19 +79,23 @@ void ls(TreeNode* currentNode, char* arg)
     if (!arg) {
         ls_print_folder(currentNode);
     } else {
-        if (cmp("FOLDER_NODE", currentNode->type) == 0) {
-            List *list = (List *)currentNode->content;
-            ListNode *node = list->head;
-            while (node) {
-                if (cmp(node->info->name, arg) == 0) {
-                    currentNode = node->info;
-                    break;
-                }
-                node = node->next;
+        List *list = (List *)currentNode->content;
+        ListNode *node = list->head;
+        while (node) {
+            if (cmp(node->info->name, arg) == 0) {
+                currentNode = node->info;
+                break;
             }
-            ls_print_folder(currentNode);
+            node = node->next;
+        }
+        if (!node) {
+            printf("ls: cannot access '<%s>': No such file or directory");
         } else {
-            printf("%s\n", ((FileContent *)currentNode->content)->text);
+            if (cmp("FOLDER_NODE", currentNode->type) == 0) {
+                ls_print_folder(currentNode);
+            } else {
+                printf("%s\n", ((FileContent *)currentNode->content)->text);
+            }      
         }
     }
 }
