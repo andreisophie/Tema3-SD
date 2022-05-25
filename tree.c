@@ -8,7 +8,8 @@
 #define PARENT_DIR ".."
 
 
-FileTree *createFileTree(char* rootFolderName) {
+FileTree *createFileTree(char* rootFolderName)
+{
     FileTree *new_ft=malloc(sizeof(FileTree));
     DIE(!new_ft, "malloc failed createFileTree: new_ft");
     TreeNode *root = malloc(sizeof(TreeNode));
@@ -27,61 +28,78 @@ FileTree *createFileTree(char* rootFolderName) {
     return new_ft;
 }
 
-void freeTree(FileTree *fileTree) {
+void freeNode(TreeNode *node)
+{
+
+}
+
+void freeTree(FileTree *fileTree)
+{
     // TODO
 }
 
 
-void ls(TreeNode* currentNode, char* arg) {
+void ls(TreeNode* currentNode, char* arg)
+{
     // TODO
 }
 
 
-void pwd(TreeNode* treeNode) {
+void pwd(TreeNode* treeNode)
+{
     // TODO
 }
 
 
-TreeNode* cd(TreeNode* currentNode, char* path) {
+TreeNode* cd(TreeNode* currentNode, char* path)
+{
     // TODO
 }
 
 
-void tree(TreeNode* currentNode, char* arg) {
+void tree(TreeNode* currentNode, char* arg)
+{
     // TODO
 }
 
 
-void mkdir(TreeNode* currentNode, char* folderName) {
+void mkdir(TreeNode* currentNode, char* folderName)
+{
     // TODO
 }
 
 
-void rmrec(TreeNode* currentNode, char* resourceName) {
+void rmrec(TreeNode* currentNode, char* resourceName)
+{
     // TODO
 }
 
 
-void rm(TreeNode* currentNode, char* fileName) {
+void rm(TreeNode* currentNode, char* fileName)
+{
     // TODO
 }
 
 
-void rmdir(TreeNode* currentNode, char* folderName) {
+void rmdir(TreeNode* currentNode, char* folderName)
+{
     // TODO
 }
 
 
-void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
+void touch(TreeNode* currentNode, char* fileName, char* fileContent)
+{
     // TODO
 }
 
 
-void cp(TreeNode* currentNode, char* source, char* destination) {
+void cp(TreeNode* currentNode, char* source, char* destination)
+{
     // TODO
 }
 
-void mv(TreeNode* currentNode, char* source, char* destination) {
+void mv(TreeNode* currentNode, char* source, char* destination)
+{
     // TODO
 }
 
