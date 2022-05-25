@@ -236,7 +236,27 @@ void mkdir(TreeNode* currentNode, char* folderName)
 
 void rmrec(TreeNode* currentNode, char* resourceName)
 {
-    
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    ListNode *prev;
+    while (node) {
+        if (strcmp(node->info->name, resourceName) == 0) {
+            if (node == list->head) {
+                list->head = node->next;
+                break;
+            }
+            prev->next = node->next;
+            break;
+        }
+        prev = node;
+        node = node->next;
+    }
+    if (node == NULL) {
+        printf("rmrec: failed to remove '%s': No such file or directory", resourceName);
+        return;
+    }
+    freeNode(node->info);
+    free(node);
 }
 
 
