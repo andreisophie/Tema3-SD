@@ -7,7 +7,6 @@
 #define NO_ARG ""
 #define PARENT_DIR ".."
 
-
 FileTree *createFileTree(char* rootFolderName)
 {
     FileTree *new_ft = malloc(sizeof(FileTree));
@@ -84,7 +83,7 @@ void ls(TreeNode* currentNode, char* arg)
             if (currentNode->type == FOLDER_NODE) {
                 ls_print_folder(currentNode);
             } else {
-                printf("%s: %s\n", arg, 
+                printf("%s: %s\n", arg,
                     ((FileContent *)currentNode->content)->text);
             }
         }
