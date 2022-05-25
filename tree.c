@@ -236,19 +236,16 @@ void mkdir(TreeNode* currentNode, char* folderName)
 
 void rmrec(TreeNode* currentNode, char* resourceName)
 {
-    // TODO
 }
 
 
 void rm(TreeNode* currentNode, char* fileName)
 {
-    // TODO
 }
 
 
 void rmdir(TreeNode* currentNode, char* folderName)
 {
-    // TODO
 }
 
 void addChild(TreeNode* folder, TreeNode *treeNode)
@@ -288,11 +285,9 @@ void touch(TreeNode* currentNode, char* fileName, char* fileText)
 
 void cp(TreeNode* currentNode, char* source, char* destination)
 {
-    // TODO
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination)
 {
-    // TODO
 }
 
