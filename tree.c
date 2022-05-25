@@ -116,37 +116,80 @@ TreeNode* search_node(TreeNode* currentNode, char* arg)
         return NULL;
 }
 
-TreeNode* cd(TreeNode* currentNode, char* path)
+TreeNode* searchDir(TreeNode* currentNode, char* path)
 {
+    char *pathCpy = strdup(path);
     TreeNode *node = currentNode;
-    if (strcmp(path, "..") == 0) {
+    if (strcmp(pathCpy, "..") == 0) {
         if (currentNode->parent) {
+            free(pathCpy);
             return currentNode->parent;
         } else {
-            printf("cd: no such file or directory: %s", path);
-            return currentNode;
+            free(pathCpy);
+            return NULL;
         }
     }
-    char *token = strtok(path, "/\0");
+    char *token = strtok(pathCpy, "/\n\0");
     while (token) {
         if (strcmp(token, "..") == 0) {
             node = node->parent;
         } else {
             node = search_node(node, token);
             if (!node || node->type == FILE_NODE) {
-                printf("cd: no such file or directory: %s", path);
-                return currentNode;
+                free(pathCpy);
+                return NULL;
             }
         }
         token = strtok(NULL, "/\0");
     }
+    free(pathCpy);
     return node;
 }
 
+TreeNode* cd(TreeNode* currentNode, char* path)
+{
+    TreeNode *node = searchDir(currentNode, path);
+    if (!node) {
+        printf("cd: no such file or directory: %s", path);
+        return currentNode;
+    }
+    return node;
+}
+
+void printTree(TreeNode* currentNode, int tabs, int *dirs, int *files)
+{
+    for (int i = 0; i < tabs; i++)
+        printf("\t");
+    printf("%s\n", currentNode->name);
+    if (currentNode->type == FILE_NODE) {
+        (*files)++;
+        return;
+    }
+    (*dirs)++;
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    while (node) {
+        printTree(node->info, tabs + 1, dirs, files);
+        node = node->next;
+    }
+}
 
 void tree(TreeNode* currentNode, char* arg)
 {
-    // TODO
+    TreeNode *folder = searchDir(currentNode, arg);
+    if (!folder) {
+        printf("%s [error opening dir]\n\n0 directories, 0 files\n", arg);
+        return;
+    }
+
+    int dirs = 0, files = 0;
+    List *list = ((FolderContent *)folder->content)->children;
+    ListNode *node = list->head;
+    while (node) {
+        printTree(node->info, 0, &dirs, &files);
+        node = node->next;
+    }
+    printf("%d directories, %d files", dirs, files);
 }
 
 TreeNode *emptyDir(char* folderName)

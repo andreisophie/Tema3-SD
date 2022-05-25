@@ -47,6 +47,7 @@ void ls(TreeNode* currentNode, char* arg);
 
 void pwd(TreeNode* treeNode);
 
+TreeNode* searchDir(TreeNode* currentNode, char* path);
 TreeNode* cd(TreeNode* currentNode, char* path);
 
 void tree(TreeNode* currentNode, char* arg);
