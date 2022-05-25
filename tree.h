@@ -59,6 +59,8 @@ void rmdir(TreeNode* currentNode, char* folderName);
 
 void rmrec(TreeNode* currentNode, char* resourceName);
 
+void addLast(List *list, TreeNode *treeNode);
+
 void touch(TreeNode* currentNode, char* fileName, char* fileContent);
 
 void cp(TreeNode* currentNode, char* source, char* destination);
