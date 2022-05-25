@@ -2,16 +2,32 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
+#include "utils.h"
 #define TREE_CMD_INDENT_SIZE 4
 #define NO_ARG ""
 #define PARENT_DIR ".."
 
 
-FileTree createFileTree(char* rootFolderName) {
-    // TODO
+FileTree *createFileTree(char* rootFolderName) {
+    FileTree *new_ft=malloc(sizeof(FileTree));
+    DIE(!new_ft, "malloc failed createFileTree: new_ft");
+    TreeNode *root = malloc(sizeof(TreeNode));
+    DIE(!root, "malloc failed createFileTree: root");
+    root->parent = NULL;
+    root->name = rootFolderName;
+    root->type = FOLDER_NODE;
+    FolderContent *root_content = malloc(sizeof(FolderContent));
+    List* list = malloc(sizeof(List));
+    root_content->children = list;
+    list->head = NULL;
+
+    new_ft->root = root;
+    new_ft->root->content = root_content;
+
+    return new_ft;
 }
 
-void freeTree(FileTree fileTree) {
+void freeTree(FileTree *fileTree) {
     // TODO
 }
 
