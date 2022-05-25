@@ -401,13 +401,8 @@ TreeNode* searchFile(TreeNode* currentNode, char* path)
     char *pathCpy = strdup(path);
     TreeNode *node = currentNode;
     if (strcmp(pathCpy, "..") == 0) {
-        if (currentNode->parent) {
-            free(pathCpy);
-            return currentNode->parent;
-        } else {
-            free(pathCpy);
-            return NULL;
-        }
+        free(pathCpy);
+        return NULL;
     }
     char *token = strtok(pathCpy, "/\n\0");
     while (token) {
@@ -442,7 +437,7 @@ void cp(TreeNode* currentNode, char* source, char* destination)
     TreeNode *fileDest = searchFile(currentNode, destination);
     if (fileDest == NULL) {
         if (folder == NULL) {
-            printf("cp: failed to acces '%s': Not a directory.", destination);
+            printf("cp: failed to access '%s': Not a directory.", destination);
             return;
         }
         TreeNode *destCheck = searchFile(folder, fileCopy->name);
