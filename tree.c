@@ -119,7 +119,7 @@ TreeNode *emptyDir(char* folderName)
     TreeNode *newDir = malloc(sizeof(TreeNode));
     DIE(!newDir, "malloc failed createFileTree: root\n");
     newDir->parent = NULL;
-    newDir->name = strdup(folderName);
+    newDir->name = folderName;
     newDir->type = FOLDER_NODE;
     FolderContent *dirContent = malloc(sizeof(FolderContent));
     List* list = malloc(sizeof(List));
@@ -181,12 +181,12 @@ void touch(TreeNode* currentNode, char* fileName, char* fileText)
     TreeNode *newFile = malloc(sizeof(TreeNode));
     DIE(!newFile, "malloc failed touch: newFile\n");
     newFile->parent = currentNode;
-    newFile->name = strdup(fileName);
+    newFile->name = fileName;
     newFile->type = FILE_NODE;
     FileContent *fileContent = malloc(sizeof(FileContent));
     DIE(!fileContent, "malloc failed touc: fileContent\n");
     if (fileContent)
-        fileContent->text = strdup(fileText);
+        fileContent->text = fileText;
     else
         fileContent->text = NULL;
     newFile->content = fileContent;
