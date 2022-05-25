@@ -439,19 +439,26 @@ void cp(TreeNode* currentNode, char* source, char* destination)
     }
 
     TreeNode *folder = searchDir(currentNode, destination);
-    if (folder == NULL) {
-        printf("cp: failed to acces '%s': Not a directory.", destination);
+    TreeNode *fileDest = searchFile(currentNode, destination);
+    if (fileDest == NULL) {
+        if (folder == NULL) {
+            printf("cp: failed to acces '%s': Not a directory.", destination);
+            return;
+        }
+        TreeNode *destCheck = searchFile(folder, fileCopy->name);
+        if (destCheck == NULL) {
+            // copiez direct
+            touch(folder, strdup(fileCopy->name), strdup(((FileContent *)fileCopy->content)->text));
+            return;
+        } 
+        // schimb content
+        free(((FileContent *)destCheck->content)->text);
+        ((FileContent *)destCheck->content)->text = strdup(((FileContent *)fileCopy->content)->text);
         return;
     }
-    TreeNode *destCheck = searchFile(folder, fileCopy->name);
-    if (destCheck == NULL) {
-        // copiez direct
-        touch(folder, strdup(fileCopy->name), strdup(((FileContent *)fileCopy->content)->text));
-        return;
-    } 
-    // schimb content
-    free(((FileContent *)destCheck->content)->text);
-    ((FileContent *)destCheck->content)->text = strdup(((FileContent *)fileCopy->content)->text);
+
+    free(((FileContent *)fileDest->content)->text);
+    ((FileContent *)fileDest->content)->text = strdup(((FileContent *)fileCopy->content)->text);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination)
