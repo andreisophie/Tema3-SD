@@ -61,6 +61,10 @@ int main() {
     TreeNode* currentFolder = fileTree->root;
 
     while (fgets(line, sizeof(line), stdin) != NULL) {
+        // Folosit ca sa pot iesi din program, sa testez free-ul
+        if (!strcmp(line, "EXIT\n"))
+            break;
+
         line[strlen(line)-1] = 0;
 
         cmd[0][0] = cmd[1][0] = cmd[2][0] = 0;
