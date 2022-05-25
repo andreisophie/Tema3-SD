@@ -79,12 +79,12 @@ void ls(TreeNode* currentNode, char* arg)
             node = node->next;
         }
         if (!node) {
-            printf("ls: cannot access '<%s>': No such file or directory", arg);
+            printf("ls: cannot access '%s': No such file or directory", arg);
         } else {
             if (currentNode->type == FOLDER_NODE) {
                 ls_print_folder(currentNode);
             } else {
-                printf("a: %s\n", ((FileContent *)currentNode->content)->text);
+                printf("%s: %s\n", arg, ((FileContent *)currentNode->content)->text);
             }      
         }
     }
@@ -196,15 +196,8 @@ void addChild(TreeNode* folder, TreeNode *treeNode)
     ListNode *newNode = malloc(sizeof(ListNode));
     DIE(!newNode, "malloc failed addLast: newNode\n");
     newNode->info = treeNode;
-    newNode->next = NULL;
-    if (!list->head) {
-        list->head = newNode;
-        return;
-    }
-    ListNode *current = list->head;
-    while (current->next)
-        current = current->next;
-    current->next = newNode;
+    newNode->next = list->head;
+    list->head = newNode;
 }
 
 void touch(TreeNode* currentNode, char* fileName, char* fileText)
