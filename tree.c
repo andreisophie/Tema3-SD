@@ -66,7 +66,7 @@ void freeTree(FileTree *fileTree)
 
 void ls_print_folder(TreeNode *currentNode)
 {
-    List *list = (List *)currentNode->content;
+    List *list = ((FolderContent *)currentNode->content)->children;
     ListNode *node = list->head;
     while (node) {
         printf("%s\n", node->info->name);
@@ -79,7 +79,7 @@ void ls(TreeNode* currentNode, char* arg)
     if (arg[0] == '\0') {
         ls_print_folder(currentNode);
     } else {
-        List *list = (List *)currentNode->content;
+        List *list = ((FolderContent *)currentNode->content)->children;
         ListNode *node = list->head;
         while (node) {
             if (strcmp(node->info->name, arg) == 0) {
