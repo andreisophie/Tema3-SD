@@ -38,10 +38,36 @@ void freeTree(FileTree *fileTree)
     // TODO
 }
 
+void ls_print_folder(TreeNode *currentNode)
+{
+    List *list = (List *)currentNode->content;
+    ListNode *node = list->head;
+    while (node) {
+        printf("%s\n", node->info->name);
+        node = node->next;
+    }
+}
 
 void ls(TreeNode* currentNode, char* arg)
 {
-    // TODO
+    if (!arg) {
+        ls_print_folder(currentNode);
+    } else {
+        if (cmp("FOLDER_NODE", currentNode->type) == 0) {
+            List *list = (List *)currentNode->content;
+            ListNode *node = list->head;
+            while (node) {
+                if (cmp(node->info->name, arg) == 0) {
+                    currentNode = node->info;
+                    break;
+                }
+                node = node->next;
+            }
+            ls_print_folder(currentNode);
+        } else {
+            printf("%s\n", ((FileContent *)currentNode->content)->text);
+        }
+    }
 }
 
 
@@ -90,6 +116,7 @@ void rmdir(TreeNode* currentNode, char* folderName)
 void touch(TreeNode* currentNode, char* fileName, char* fileContent)
 {
     // TODO
+
 }
 
 
