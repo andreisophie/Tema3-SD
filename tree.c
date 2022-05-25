@@ -120,8 +120,12 @@ TreeNode* cd(TreeNode* currentNode, char* path)
 {
     TreeNode *node = currentNode;
     if (strcmp(path, "..") == 0) {
-        if (currentNode->parent)
+        if (currentNode->parent) {
             return currentNode->parent;
+        } else {
+            printf("cd: no such file or directory: <%s>", path);
+            return currentNode;
+        }
     }
     char *token = strtok(path, "/\0");
     while (token) {
@@ -129,7 +133,7 @@ TreeNode* cd(TreeNode* currentNode, char* path)
             currentNode = currentNode->parent;
         } else {
             node = search_node(node, token);
-            if (!node) {
+            if (!node || node->type == FILE_NODE) {
                 printf("cd: no such file or directory: <%s>", path);
                 return currentNode;
             }
