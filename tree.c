@@ -146,6 +146,39 @@ TreeNode* searchDir(TreeNode* currentNode, char* path)
     return node;
 }
 
+TreeNode* searchDirPrev(TreeNode* currentNode, char* path)
+{
+    char *pathCpy = strdup(path);
+    TreeNode *node = currentNode;
+    TreeNode *prevNode = currentNode;
+    if (strcmp(pathCpy, "..") == 0) {
+        if (currentNode->parent) {
+            free(pathCpy);
+            return currentNode->parent;
+        } else {
+            free(pathCpy);
+            return NULL;
+        }
+    }
+    char *token = strtok(pathCpy, "/\n\0");
+    while (token) {
+        if (strcmp(token, "..") == 0) {
+            prevNode = node;
+            node = node->parent;
+        } else {
+            prevNode = node;
+            node = search_node(node, token);
+            if (!node || node->type == FILE_NODE) {
+                free(pathCpy);
+                return NULL;
+            }
+        }
+        token = strtok(NULL, "/\0");
+    }
+    free(pathCpy);
+    return prevNode;
+}
+
 TreeNode* cd(TreeNode* currentNode, char* path)
 {
     TreeNode *node = searchDir(currentNode, path);
@@ -282,9 +315,62 @@ void touch(TreeNode* currentNode, char* fileName, char* fileText)
     addChild(currentNode, newFile);
 }
 
+TreeNode* searchFile(TreeNode* currentNode, char* path)
+{
+    char *pathCpy = strdup(path);
+    TreeNode *node = currentNode;
+    if (strcmp(pathCpy, "..") == 0) {
+        if (currentNode->parent) {
+            free(pathCpy);
+            return currentNode->parent;
+        } else {
+            free(pathCpy);
+            return NULL;
+        }
+    }
+    char *token = strtok(pathCpy, "/\n\0");
+    while (token) {
+        if (strcmp(token, "..") == 0) {
+            node = node->parent;
+        } else {
+            node = search_node(node, token);
+            if (node && node->type == FILE_NODE) {
+                free(pathCpy);
+                return node;
+            }
+            if (!node) {
+                free(pathCpy);
+                return NULL;
+            }
+        }
+        token = strtok(NULL, "/\0");
+    }
+    //free(pathCpy);
+   // return node;
+}
 
 void cp(TreeNode* currentNode, char* source, char* destination)
 {
+    TreeNode *fileCopy = searchFile(currentNode, source);
+    if (fileCopy == NULL) {
+        printf("cp: -r not specified; omitting directory '%s'", source);
+        return;
+    }
+
+    TreeNode *folder = searchDir(currentNode, destination);
+    if (folder == NULL) {
+        printf("cp: failed to acces '%s': Not a directory.", destination);
+        return;
+    }
+    TreeNode *destCheck = searchFile(folder, fileCopy->name);
+    if (destCheck == NULL) {
+        // copiez direct
+        touch(folder, strdup(fileCopy->name), strdup(((FileContent *)fileCopy->content)->text));
+        return;
+    } 
+    // schimb content
+    free(((FileContent *)destCheck->content)->text);
+    ((FileContent *)destCheck->content)->text = strdup(((FileContent *)fileCopy->content)->text);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination)
