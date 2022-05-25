@@ -252,7 +252,8 @@ void rmrec(TreeNode* currentNode, char* resourceName)
         node = node->next;
     }
     if (node == NULL) {
-        printf("rmrec: failed to remove '%s': No such file or directory", resourceName);
+        printf("rmrec: failed to remove '%s': No such file or directory",
+            resourceName);
         return;
     }
     freeNode(node->info);
@@ -282,7 +283,8 @@ void rm(TreeNode* currentNode, char* fileName)
         node = node->next;
     }
     if (node == NULL) {
-        printf("rm: failed to remove '%s': No such file or directory", fileName);
+        printf("rm: failed to remove '%s': No such file or directory",
+            fileName);
         return;
     }
     freeNode(node->info);
@@ -298,11 +300,14 @@ void rmdir(TreeNode* currentNode, char* folderName)
     while (node) {
         if (strcmp(node->info->name, folderName) == 0) {
             if (node->info->type == FILE_NODE) {
-                printf("rmdir: failed to remove '%s': Not a directory", folderName);
+                printf("rmdir: failed to remove '%s': Not a directory",
+                    folderName);
                 return;
             }
-            if (((FolderContent *)node->info->content)->children->head != NULL) {
-                printf("rmdir: failed to remove '%s': Directory not empty", folderName);
+            if (((FolderContent *)node->info->content)->children->head
+                != NULL) {
+                printf("rmdir: failed to remove '%s': Directory not empty",
+                    folderName);
                 return;
             }
             if (node == list->head) {
@@ -316,7 +321,8 @@ void rmdir(TreeNode* currentNode, char* folderName)
         node = node->next;
     }
     if (node == NULL) {
-        printf("rmdir: failed to remove '%s': No such file or directory", folderName);
+        printf("rmdir: failed to remove '%s': No such file or directory",
+            folderName);
         return;
     }
     freeNode(node->info);
