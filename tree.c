@@ -103,7 +103,13 @@ void ls(TreeNode* currentNode, char* arg)
 
 void pwd(TreeNode* treeNode)
 {
-    // TODO
+    if (!treeNode->parent) {
+        printf("%s", treeNode->name);
+        return;
+    }  
+    
+    pwd(treeNode->parent);
+    printf("/%s", treeNode->name);
 }
 
 
