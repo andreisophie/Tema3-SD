@@ -28,14 +28,40 @@ FileTree *createFileTree(char* rootFolderName)
     return new_ft;
 }
 
+void freeFile(FileContent *file)
+{
+    free(file->text);
+    free(file);
+}
+
+void freeFolder(FolderContent *folder)
+{
+    ListNode *current = folder->children->head;
+    ListNode *next_node;
+    while (current) {
+        next_node = current->next;
+        freeNode(current->info);
+        free(current);
+        current = next_node;
+    }
+    free(folder->children);
+    free(folder);
+}
+
 void freeNode(TreeNode *node)
 {
-
+    if (node->type == FILE_NODE)
+        freeFile(node->content);
+    else
+        freeFolder(node->content);
+    free(node->name);
+    free(node);
 }
 
 void freeTree(FileTree *fileTree)
 {
-    // TODO
+    freeNode(fileTree->root);
+    free(fileTree);
 }
 
 void ls_print_folder(TreeNode *currentNode)
