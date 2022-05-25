@@ -11,9 +11,9 @@
 FileTree *createFileTree(char* rootFolderName)
 {
     FileTree *new_ft=malloc(sizeof(FileTree));
-    DIE(!new_ft, "malloc failed createFileTree: new_ft");
+    DIE(!new_ft, "malloc failed createFileTree: new_ft\n");
     TreeNode *root = malloc(sizeof(TreeNode));
-    DIE(!root, "malloc failed createFileTree: root");
+    DIE(!root, "malloc failed createFileTree: root\n");
     root->parent = NULL;
     root->name = rootFolderName;
     root->type = FOLDER_NODE;
@@ -79,11 +79,11 @@ void ls(TreeNode* currentNode, char* arg)
     if (!arg) {
         ls_print_folder(currentNode);
     } else {
-        if (cmp("FOLDER_NODE", currentNode->type) == 0) {
+        if (currentNode->type == FOLDER_NODE) {
             List *list = (List *)currentNode->content;
             ListNode *node = list->head;
             while (node) {
-                if (cmp(node->info->name, arg) == 0) {
+                if (strcmp(node->info->name, arg) == 0) {
                     currentNode = node->info;
                     break;
                 }
@@ -138,11 +138,37 @@ void rmdir(TreeNode* currentNode, char* folderName)
     // TODO
 }
 
-
-void touch(TreeNode* currentNode, char* fileName, char* fileContent)
+void addLast(List *list, TreeNode *treeNode)
 {
-    // TODO
+    ListNode *newNode = malloc(sizeof(ListNode));
+    DIE(!newNode, "malloc failed addLast: newNode\n");
+    newNode->info = treeNode;
+    newNode->next = NULL;
+    if (!list->head) {
+        list->head = newNode;
+        return;
+    }
+    ListNode *current = list->head;
+    while (!current->next)
+        current = current->next;
+    current->next = newNode;
+}
 
+void touch(TreeNode* currentNode, char* fileName, char* fileText)
+{
+    TreeNode *newFile = malloc(sizeof(TreeNode));
+    DIE(!newFile, "malloc failed touch: newFile\n");
+    newFile->parent = currentNode;
+    newFile->name = strdup(fileName);
+    newFile->type = FILE_NODE;
+    FileContent *fileContent = malloc(sizeof(FileContent));
+    DIE(!fileContent, "malloc failed touc: fileContent\n");
+    if (fileContent)
+        fileContent->text = strdup(fileText);
+    else
+        fileContent->text = NULL;
+    newFile->content = fileContent;
+    addLast(((FolderContent *)currentNode->content)->children, newFile);
 }
 
 
