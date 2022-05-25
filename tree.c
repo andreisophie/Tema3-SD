@@ -129,7 +129,7 @@ TreeNode* cd(TreeNode* currentNode, char* path)
     }
     char *token = strtok(path, "/\0");
     while (token) {
-        if (strcmp(path, "..") == 0) {
+        if (strcmp(token, "..") == 0) {
             currentNode = currentNode->parent;
         } else {
             node = search_node(node, token);
