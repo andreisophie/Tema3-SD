@@ -76,7 +76,7 @@ void ls_print_folder(TreeNode *currentNode)
 
 void ls(TreeNode* currentNode, char* arg)
 {
-    if (!arg) {
+    if (arg[0] == '\0') {
         ls_print_folder(currentNode);
     } else {
         List *list = (List *)currentNode->content;
