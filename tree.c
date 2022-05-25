@@ -123,7 +123,7 @@ TreeNode* cd(TreeNode* currentNode, char* path)
         if (currentNode->parent) {
             return currentNode->parent;
         } else {
-            printf("cd: no such file or directory: <%s>", path);
+            printf("cd: no such file or directory: %s", path);
             return currentNode;
         }
     }
@@ -134,7 +134,7 @@ TreeNode* cd(TreeNode* currentNode, char* path)
         } else {
             node = search_node(node, token);
             if (!node || node->type == FILE_NODE) {
-                printf("cd: no such file or directory: <%s>", path);
+                printf("cd: no such file or directory: %s", path);
                 return currentNode;
             }
         }
@@ -165,8 +165,26 @@ TreeNode *emptyDir(char* folderName)
     return newDir;
 }
 
+int checkFile(TreeNode *currentNode, char* fileName)
+{
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    while (node) {
+        if (strcmp(node->info->name, fileName) == 0) {
+            return 0;
+        }
+        node = node->next;
+    }
+    return 1;
+}
+
 void mkdir(TreeNode* currentNode, char* folderName)
 {
+    if (!checkFile(currentNode, folderName)) {
+        printf("mkdir: cannot create directory '%s': File exists", folderName);
+        free(folderName);
+        return;
+    }
     TreeNode *newDir = emptyDir(folderName);
     newDir->parent = currentNode;
     addChild(currentNode, newDir);
@@ -206,13 +224,16 @@ void addChild(TreeNode* folder, TreeNode *treeNode)
 
 void touch(TreeNode* currentNode, char* fileName, char* fileText)
 {
+    if (!checkFile(currentNode, fileName)) {
+        return;
+    }
     TreeNode *newFile = malloc(sizeof(TreeNode));
     DIE(!newFile, "malloc failed touch: newFile\n");
     newFile->parent = currentNode;
     newFile->name = fileName;
     newFile->type = FILE_NODE;
     FileContent *fileContent = malloc(sizeof(FileContent));
-    DIE(!fileContent, "malloc failed touc: fileContent\n");
+    DIE(!fileContent, "malloc failed touch: fileContent\n");
     if (fileContent)
         fileContent->text = fileText;
     else
