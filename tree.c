@@ -10,7 +10,7 @@
 
 FileTree *createFileTree(char* rootFolderName)
 {
-    FileTree *new_ft=malloc(sizeof(FileTree));
+    FileTree *new_ft = malloc(sizeof(FileTree));
     DIE(!new_ft, "malloc failed createFileTree: new_ft\n");
     TreeNode *root = emptyDir(rootFolderName);
     new_ft->root = root;
@@ -84,8 +84,9 @@ void ls(TreeNode* currentNode, char* arg)
             if (currentNode->type == FOLDER_NODE) {
                 ls_print_folder(currentNode);
             } else {
-                printf("%s: %s\n", arg, ((FileContent *)currentNode->content)->text);
-            }      
+                printf("%s: %s\n", arg, 
+                    ((FileContent *)currentNode->content)->text);
+            }
         }
     }
 }
@@ -96,8 +97,8 @@ void pwd(TreeNode* treeNode)
     if (!treeNode->parent) {
         printf("%s", treeNode->name);
         return;
-    }  
-    
+    }
+
     pwd(treeNode->parent);
     printf("/%s", treeNode->name);
 }
