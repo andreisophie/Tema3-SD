@@ -51,6 +51,7 @@ TreeNode* cd(TreeNode* currentNode, char* path);
 
 void tree(TreeNode* currentNode, char* arg);
 
+void addChild(TreeNode* folder, TreeNode *treeNode);
 void mkdir(TreeNode* currentNode, char* folderName);
 
 void rm(TreeNode* currentNode, char* fileName);
@@ -67,6 +68,7 @@ void cp(TreeNode* currentNode, char* source, char* destination);
 
 void mv(TreeNode* currentNode, char* source, char* destination);
 
+TreeNode *emptyDir(char* folderName);
 FileTree *createFileTree();
 
 void freeFile(FileContent *file);

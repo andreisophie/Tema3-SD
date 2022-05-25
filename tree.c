@@ -12,18 +12,8 @@ FileTree *createFileTree(char* rootFolderName)
 {
     FileTree *new_ft=malloc(sizeof(FileTree));
     DIE(!new_ft, "malloc failed createFileTree: new_ft\n");
-    TreeNode *root = malloc(sizeof(TreeNode));
-    DIE(!root, "malloc failed createFileTree: root\n");
-    root->parent = NULL;
-    root->name = rootFolderName;
-    root->type = FOLDER_NODE;
-    FolderContent *root_content = malloc(sizeof(FolderContent));
-    List* list = malloc(sizeof(List));
-    root_content->children = list;
-    list->head = NULL;
-
+    TreeNode *root = emptyDir(rootFolderName);
     new_ft->root = root;
-    new_ft->root->content = root_content;
 
     return new_ft;
 }
@@ -124,10 +114,27 @@ void tree(TreeNode* currentNode, char* arg)
     // TODO
 }
 
+TreeNode *emptyDir(char* folderName)
+{
+    TreeNode *newDir = malloc(sizeof(TreeNode));
+    DIE(!newDir, "malloc failed createFileTree: root\n");
+    newDir->parent = NULL;
+    newDir->name = strdup(folderName);
+    newDir->type = FOLDER_NODE;
+    FolderContent *dirContent = malloc(sizeof(FolderContent));
+    List* list = malloc(sizeof(List));
+    dirContent->children = list;
+    list->head = NULL;
+    newDir->content = dirContent;
+
+    return newDir;
+}
 
 void mkdir(TreeNode* currentNode, char* folderName)
 {
-    // TODO
+    TreeNode *newDir = emptyDir(folderName);
+    newDir->parent = currentNode;
+    addChild(currentNode, newDir);
 }
 
 
@@ -148,8 +155,13 @@ void rmdir(TreeNode* currentNode, char* folderName)
     // TODO
 }
 
-void addLast(List *list, TreeNode *treeNode)
+void addChild(TreeNode* folder, TreeNode *treeNode)
 {
+    if (folder->type != FOLDER_NODE) {
+        printf("error addLast: param is not folder\n");
+        return;
+    }
+    List *list = ((FolderContent *)folder->content)->children;
     ListNode *newNode = malloc(sizeof(ListNode));
     DIE(!newNode, "malloc failed addLast: newNode\n");
     newNode->info = treeNode;
@@ -159,7 +171,7 @@ void addLast(List *list, TreeNode *treeNode)
         return;
     }
     ListNode *current = list->head;
-    while (!current->next)
+    while (current->next)
         current = current->next;
     current->next = newNode;
 }
@@ -178,7 +190,7 @@ void touch(TreeNode* currentNode, char* fileName, char* fileText)
     else
         fileContent->text = NULL;
     newFile->content = fileContent;
-    addLast(((FolderContent *)currentNode->content)->children, newFile);
+    addChild(currentNode, newFile);
 }
 
 
