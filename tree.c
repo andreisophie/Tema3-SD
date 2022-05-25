@@ -94,7 +94,7 @@ void ls(TreeNode* currentNode, char* arg)
             if (currentNode->type == FOLDER_NODE) {
                 ls_print_folder(currentNode);
             } else {
-                printf("%s\n", ((FileContent *)currentNode->content)->text);
+                printf("a: %s\n", ((FileContent *)currentNode->content)->text);
             }      
         }
     }
@@ -113,9 +113,40 @@ void pwd(TreeNode* treeNode)
 }
 
 
+TreeNode* search_node(TreeNode* currentNode, char* arg)
+{
+    List *list = ((FolderContent *)currentNode->content)->children;
+    ListNode *node = list->head;
+    while (node) {
+        if (strcmp(node->info->name, arg) == 0)
+            return node->info;
+        node = node->next;
+    }
+    if (!node)
+        return NULL;
+}
+
 TreeNode* cd(TreeNode* currentNode, char* path)
 {
-    // TODO
+    TreeNode *node = currentNode;
+    if (strcmp(path, "..") == 0) {
+        if (currentNode->parent)
+            return currentNode->parent;
+    }
+    char *token = strtok(path, "/\0");
+    while (token) {
+        if (strcmp(path, "..") == 0) {
+            currentNode = currentNode->parent;
+        } else {
+            node = search_node(node, token);
+            if (!node) {
+                printf("cd: no such file or directory: <%s>", path);
+                return currentNode;
+            }
+        }
+        token = strtok(NULL, "/\0");
+    }
+    return node;
 }
 
 
