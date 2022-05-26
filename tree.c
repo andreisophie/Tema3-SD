@@ -465,18 +465,21 @@ void cp(TreeNode* currentNode, char* source, char* destination)
 
         if (destCheck == NULL) {
             // copiez direct
-            touch(folder, strdup(fileCopy->name), strdup(((FileContent *)fileCopy->content)->text));
+            touch(folder, strdup(fileCopy->name),
+            strdup(((FileContent *)fileCopy->content)->text));
             return;
         }
 
         // schimb content
         free(((FileContent *)destCheck->content)->text);
-        ((FileContent *)destCheck->content)->text = strdup(((FileContent *)fileCopy->content)->text);
+        ((FileContent *)destCheck->content)->text =
+        strdup(((FileContent *)fileCopy->content)->text);
         return;
     }
 
     free(((FileContent *)fileDest->content)->text);
-    ((FileContent *)fileDest->content)->text = strdup(((FileContent *)fileCopy->content)->text);
+    ((FileContent *)fileDest->content)->text =
+    strdup(((FileContent *)fileCopy->content)->text);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination)
