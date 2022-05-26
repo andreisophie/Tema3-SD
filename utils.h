@@ -1,4 +1,4 @@
-// Copyright 2022 Andrei Maruntis
+// Copyright https://ocw.cs.pub.ro/courses/so/laboratoare/resurse/die
 
 #ifndef UTILS_H_
 #define UTILS_H_
