@@ -458,7 +458,7 @@ void cp(TreeNode* currentNode, char* source, char* destination)
     TreeNode *fileDest = searchFile(currentNode, destination);
     if (fileDest == NULL) {
         if (folder == NULL) {
-            printf("cp: failed to access '%s': Not a directory.", destination);
+            printf("cp: failed to access '%s': Not a directory", destination);
             return;
         }
         TreeNode *destCheck = searchFile(folder, fileCopy->name);
