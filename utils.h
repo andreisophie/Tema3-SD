@@ -17,4 +17,6 @@
 		}							\
 	} while (0)
 
+char *strdup(const char *str);
+
 #endif  // UTILS_H_

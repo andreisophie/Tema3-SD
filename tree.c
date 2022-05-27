@@ -479,10 +479,53 @@ void cp(TreeNode* currentNode, char* source, char* destination)
 
     free(((FileContent *)fileDest->content)->text);
     ((FileContent *)fileDest->content)->text =
-    strdup(((FileContent *)fileCopy->content)->text);
+        strdup(((FileContent *)fileCopy->content)->text);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination)
 {
+    TreeNode *fileCpy = searchFile(currentNode, source);
+    if (!fileCpy)
+        fileCpy = searchDir(currentNode, source);
+    if (!fileCpy) {
+        printf("mv: failed to access '%s': Not a file or directory", source);
+        return;
+    }
+
+    TreeNode *destNode = searchFile(currentNode, destination);
+    if (!destNode)
+        destNode = searchDir(currentNode, destination);
+    if (!destNode) {
+        printf("mv: failed to access '%s': Not a directory", destination);
+        return;
+    }
+
+    if (fileCpy->type == FILE_NODE && destNode->type == FILE_NODE) {
+        free(((FileContent *)destNode->content)->text);
+        ((FileContent *)destNode->content)->text =
+            strdup(((FileContent *)fileCpy->content)->text);
+        rm(fileCpy->parent, fileCpy->name);
+        return;
+    }
+
+    // scot fisierul/directorul de copiat din folderul parinte
+    List *list = ((FolderContent *)fileCpy->parent->content)->children;
+    ListNode *node = list->head;
+    ListNode *prev;
+    while (node) {
+        if (strcmp(node->info->name, fileCpy->name) == 0) {
+            if (node == list->head) {
+                list->head = node->next;
+                break;
+            }
+            prev->next = node->next;
+            break;
+        }
+        prev = node;
+        node = node->next;
+    }
+    // mut nodul in noua cale
+    fileCpy->parent = destNode;
+    addChild(destNode, fileCpy);
 }
 

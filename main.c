@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tree.h"
+#include "utils.h"
 #define LINE_MAX_LEN 1000
 #define TOKEN_MAX_LEN 300
 
