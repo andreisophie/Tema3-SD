@@ -344,10 +344,13 @@ void rm(TreeNode* currentNode, char* fileName)
 
 void rmdir(TreeNode* currentNode, char* folderName)
 {
+    // caut directorul cu numele dat in folderul curent, iterand
+    // prin copiii directorului curent
     List *list = ((FolderContent *)currentNode->content)->children;
     ListNode *node = list->head;
     ListNode *prev;
     while (node) {
+        // daca am gasit directorul pe care il caut
         if (strcmp(node->info->name, folderName) == 0) {
             if (node->info->type == FILE_NODE) {
                 printf("rmdir: failed to remove '%s': Not a directory",
@@ -360,6 +363,7 @@ void rmdir(TreeNode* currentNode, char* folderName)
                     folderName);
                 return;
             }
+            // scot directorul din lista de copii
             if (node == list->head) {
                 list->head = node->next;
                 break;
@@ -379,6 +383,7 @@ void rmdir(TreeNode* currentNode, char* folderName)
     free(node);
 }
 
+// functie care adauga un copil unui folder
 void addChild(TreeNode* folder, TreeNode *treeNode)
 {
     if (folder->type != FOLDER_NODE) {
@@ -419,6 +424,7 @@ void touch(TreeNode* currentNode, char* fileName, char* fileText)
     addChild(currentNode, newFile);
 }
 
+// functie care returneaza fisierul de la calea data, daca exista
 TreeNode* searchFile(TreeNode* currentNode, char* path)
 {
     char *pathCpy = strdup(path);
@@ -448,35 +454,42 @@ TreeNode* searchFile(TreeNode* currentNode, char* path)
 
 void cp(TreeNode* currentNode, char* source, char* destination)
 {
+    // caut fisierul sursa
     TreeNode *fileCopy = searchFile(currentNode, source);
     if (fileCopy == NULL) {
         printf("cp: -r not specified; omitting directory '%s'", source);
         return;
     }
 
+    // caut directorul si eventual fisierul destinatie
     TreeNode *folder = searchDir(currentNode, destination);
     TreeNode *fileDest = searchFile(currentNode, destination);
     if (fileDest == NULL) {
+        // eroare daca nu exista calea
         if (folder == NULL) {
             printf("cp: failed to access '%s': Not a directory", destination);
             return;
         }
+        // daca destinatia este un director, caut daca exista deja
+        // un fisier cu numele dat
         TreeNode *destCheck = searchFile(folder, fileCopy->name);
 
+        // daca nu exista un asemenea fisier, il creez
         if (destCheck == NULL) {
             // copiez direct
             touch(folder, strdup(fileCopy->name),
-            strdup(((FileContent *)fileCopy->content)->text));
+                strdup(((FileContent *)fileCopy->content)->text));
             return;
         }
 
-        // schimb content
+        // daca exista un fisier cu acelasi nume, inlocuiesc continutul
         free(((FileContent *)destCheck->content)->text);
         ((FileContent *)destCheck->content)->text =
-        strdup(((FileContent *)fileCopy->content)->text);
+            strdup(((FileContent *)fileCopy->content)->text);
         return;
     }
 
+    // daca destinatia este un fisier, inlocuiesc continutul
     free(((FileContent *)fileDest->content)->text);
     ((FileContent *)fileDest->content)->text =
         strdup(((FileContent *)fileCopy->content)->text);
@@ -484,22 +497,31 @@ void cp(TreeNode* currentNode, char* source, char* destination)
 
 void mv(TreeNode* currentNode, char* source, char* destination)
 {
+    // caut fisierul/directorul care trebuie mutat
     TreeNode *fileCpy = searchFile(currentNode, source);
     if (!fileCpy)
         fileCpy = searchDir(currentNode, source);
+    // daca nu exista fisierul/directorul sursa, returnez eroare
+    // (checker-ul nu trateaza acest caz particular)
     if (!fileCpy) {
         printf("mv: failed to access '%s': Not a file or directory", source);
         return;
     }
 
+    // caut fisierul/directorul destinatie
     TreeNode *destNode = searchFile(currentNode, destination);
     if (!destNode)
         destNode = searchDir(currentNode, destination);
-    if (!destNode) {
+    // daca incerc sa mut un folder intr-un fisier, afisez eroare
+    // (checker-ul nu trateaza acest caz particular)
+    if (!destNode ||
+        fileCpy->type == FOLDER_NODE && destNode->type == FILE_NODE) {
         printf("mv: failed to access '%s': Not a directory", destination);
         return;
     }
 
+    // daca si sursa si destinatia sunt fisiere, doar copiez continutul
+    // si sterg fisierul sursa
     if (fileCpy->type == FILE_NODE && destNode->type == FILE_NODE) {
         free(((FileContent *)destNode->content)->text);
         ((FileContent *)destNode->content)->text =
